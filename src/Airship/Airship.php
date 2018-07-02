@@ -58,7 +58,6 @@ class Airship {
             throw new \Exception('Bad response - make sure object conforms to valid shape.');
         } catch (ClientException $e) {
             $status_code = $e->getResponse()->getStatusCode();
-            echo $e;
             if ($status_code === 403) {
                 throw new \Exception('Invalid Airship instance - check API Key and Env Key.');
             } else {
