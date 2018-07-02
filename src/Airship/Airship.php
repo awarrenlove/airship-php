@@ -54,6 +54,8 @@ class Airship {
             $options = $this->_request_options;
             $options['body'] = json_encode($obj);
             $response = $client->request('POST', self::OBJECT_GATE_VALUES_ENDPOINT . $this->_env_key, $options);
+        } catch (BadResponseException $e) {
+            throw new \Exception('Bad response - make sure object conforms to valid shape.');
         } catch (ClientException $e) {
             $status_code = $e->getResponse()->getStatusCode();
             echo $e;
