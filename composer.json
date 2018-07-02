@@ -1,15 +1,15 @@
 {
-    "name": "airship/airship-php",
+    "name": "airship-php",
     "description": "Airship PHP SDK",
     "keywords": [
         "airship"
     ],
-    "homepage": "https://github.com/........",
+    "homepage": "https://github.com/airshiphq/airship-php",
     "license": "MIT",
     "authors": [
         {
-            "name": "George Li <support@airshiphq.com>",
-            "homepage": "http://airshiphq.com/"
+            "name": "Airship Support <support@airshiphq.com>",
+            "homepage": "https://airshiphq.com"
         }
     ],
     "require": {
