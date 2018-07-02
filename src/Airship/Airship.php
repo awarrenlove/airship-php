@@ -13,6 +13,9 @@ use GuzzleHttp\Exception\ClientException;
 
 class Airship {
 
+    const PLATFORM = 'php';
+    const VERSION = '1.1.1';
+
     const SERVER_URL = 'https://api.airshiphq.com';
     const OBJECT_GATE_VALUES_ENDPOINT = '/v1/object-gate-values/';
 
@@ -28,7 +31,8 @@ class Airship {
             'headers' => [
                 'Content-Type'  => 'application/json',
                 'Api-Key'       => $this->_api_key,
-                'Accept'        => 'application/json'
+                'Accept'        => 'application/json',
+                'SDK-Version'   => self::PLATFORM . ':' . self::VERSION
             ],
             'timeout' => 60,
             'connect_timeout' => 60
