@@ -18,7 +18,7 @@ class Airship {
 
     private $_api_key;
     private $_env_key;
-    private $_request_options = NULL;
+    private $_request_options = null;
 
     public function __construct($api_key, $env_key) {
         $this->_api_key = $api_key;
