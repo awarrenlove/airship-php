@@ -1,5 +1,5 @@
 {
-    "name": "airship-php",
+    "name": "airship/airship-php",
     "description": "Airship PHP SDK",
     "keywords": [
         "airship"
