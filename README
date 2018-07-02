@@ -1,0 +1,7 @@
+Clone repo
+
+cd to the repo and install composer locally:
+$ curl -s https://getcomposer.org/installer | php
+
+For development
+$ php composer.phar install

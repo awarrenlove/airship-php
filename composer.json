@@ -1,0 +1,24 @@
+{
+    "name": "airship/airship-php",
+    "description": "Airship PHP SDK",
+    "keywords": [
+        "airship"
+    ],
+    "homepage": "https://github.com/........",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "George Li <support@airshiphq.com>",
+            "homepage": "http://airshiphq.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Airship\\": "src/Airship/"
+        }
+    }
+}
