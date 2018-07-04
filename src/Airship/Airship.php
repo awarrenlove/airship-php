@@ -11,26 +11,27 @@ use GuzzleHttp\Exception\ClientException;
 // }
 // register_shutdown_function('shutdown', $airship);
 
-class Airship {
-
+class Airship
+{
     const PLATFORM = 'php';
     const VERSION = '1.1.1';
 
     const SERVER_URL = 'https://api.airshiphq.com';
     const OBJECT_GATE_VALUES_ENDPOINT = '/v1/object-gate-values/';
 
-    private $_api_key;
-    private $_env_key;
-    private $_request_options = null;
+    private $apiKey;
+    private $envKey;
+    private $requestOptions = null;
 
-    public function __construct($api_key, $env_key) {
-        $this->_api_key = $api_key;
-        $this->_env_key = $env_key;
+    public function __construct($apiKey, $envKey)
+    {
+        $this->apiKey = $apiKey;
+        $this->envKey = $envKey;
 
-        $this->_request_options = [
+        $this->requestOptions = [
             'headers' => [
                 'Content-Type'  => 'application/json',
-                'Api-Key'       => $this->_api_key,
+                'Api-Key'       => $this->apiKey,
                 'Accept'        => 'application/json',
                 'SDK-Version'   => self::PLATFORM . ':' . self::VERSION
             ],
@@ -39,25 +40,29 @@ class Airship {
         ];
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->flush();
     }
 
-    public function flush() {
+    public function flush()
+    {
         // Do nothing for now.
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return '[Airship object]';
     }
 
-    private function _get_gate_values_map($obj) {
+    private function getGateValuesMap($obj)
+    {
         $client = new Client(['base_uri' => self::SERVER_URL]);
         $response = null;
         try {
-            $options = $this->_request_options;
+            $options = $this->requestOptions;
             $options['body'] = json_encode($obj);
-            $response = $client->request('POST', self::OBJECT_GATE_VALUES_ENDPOINT . $this->_env_key, $options);
+            $response = $client->request('POST', self::OBJECT_GATE_VALUES_ENDPOINT . $this->envKey, $options);
         } catch (BadResponseException $e) {
             throw new \Exception('Bad response - make sure object conforms to valid shape.');
         } catch (ClientException $e) {
@@ -73,28 +78,31 @@ class Airship {
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function is_enabled($control_name, $obj, $default=false) {
-        $object_gate_values_map = $this->_get_gate_values_map($obj);
-        if (isset($object_gate_values_map[$control_name])) {
-            return $object_gate_values_map[$control_name]['is_enabled'];
+    public function isEnabled($controlName, $obj, $default = false)
+    {
+        $objectGateValuesMap = $this->getGateValuesMap($obj);
+        if (isset($objectGateValuesMap[$controlName])) {
+            return $objectGateValuesMap[$controlName]['is_enabled'];
         } else {
             return $default;
         }
     }
 
-    public function get_variation($control_name, $obj, $default=NULL) {
-        $object_gate_values_map = $this->_get_gate_values_map($obj);
-        if (isset($object_gate_values_map[$control_name])) {
-            return $object_gate_values_map[$control_name]['variation'];
+    public function getVariation($controlName, $obj, $default = null)
+    {
+        $objectGateValuesMap = $this->getGateValuesMap($obj);
+        if (isset($objectGateValuesMap[$controlName])) {
+            return $objectGateValuesMap[$controlName]['variation'];
         } else {
             return $default;
         }
     }
 
-    public function is_eligible($control_name, $obj, $default=false) {
-        $object_gate_values_map = $this->_get_gate_values_map($obj);
-        if (isset($object_gate_values_map[$control_name])) {
-            return $object_gate_values_map[$control_name]['is_eligible'];
+    public function isEligible($controlName, $obj, $default = false)
+    {
+        $objectGateValuesMap = $this->getGateValuesMap($obj);
+        if (isset($objectGateValuesMap[$controlName])) {
+            return $objectGateValuesMap[$controlName]['is_eligible'];
         } else {
             return $default;
         }
