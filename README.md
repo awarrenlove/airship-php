@@ -26,7 +26,7 @@ $airship = new Airship\Airship("<api_key>", "<env_key>");
 // e.g.,
 // $airship = new Airship\Airship("r9b72kqdh1wbzkpkf7gntwfapqoc26bl", "nxmqp35umrd3djth");
 
-if ($airship->is_enabled("bitoin-pay", ["id" => 5])) {
+if ($airship->isEnabled("bitoin-pay", ["id" => 5])) {
   // ...
 }
 
@@ -45,12 +45,12 @@ $obj = [
 $obj = [
   "type" => "User",
   "id" => "1234",
-  "displayName" => "1234"
+  "display_name" => "1234"
 ]
 
-$airship->is_enabled("bitcoin-pay", $obj) // Does the object have the feature "bitcoin-pay"?
-$airship->get_variation("bitcoin-pay", $obj) // Get the variation associated with a multi-variate flag
-$airship->is_eligible("bitcoin-pay", $obj)
+$airship->isEnabled("bitcoin-pay", $obj) // Does the object have the feature "bitcoin-pay"?
+$airship->getVariation("bitcoin-pay", $obj) // Get the variation associated with a multi-variate flag
+$airship->isEligible("bitcoin-pay", $obj)
 // Returns true if the object can potentially receive the feature via sampling
 // or is already receiving the feature.
 
@@ -128,7 +128,7 @@ $obj = [
   ]
 ]
 
-$airship->is_enabled("bitcoin-pay", $obj)
+$airship->isEnabled("bitcoin-pay", $obj)
 ```
 ___
 
