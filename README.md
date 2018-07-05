@@ -45,7 +45,7 @@ $obj = [
 $obj = [
   "type" => "User",
   "id" => "1234",
-  "displayName" => "1234"
+  "display_name" => "1234"
 ]
 
 $airship->is_enabled("bitcoin-pay", $obj) // Does the object have the feature "bitcoin-pay"?
