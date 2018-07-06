@@ -20,5 +20,12 @@
         "psr-4": {
             "Airship\\": "src/Airship/"
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "scripts": {
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src"
     }
 }
