@@ -38,11 +38,6 @@ class Airship
 
     private function getGateValuesMap($obj)
     {
-        // $map = $this->cache->get($obj);
-        // if ($map === null) {
-        //     $map = $this->client->get($obj);
-        // }
-        // return $map;
         return $this->client->sendRequest($obj);
     }
 
