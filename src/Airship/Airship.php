@@ -93,6 +93,16 @@ class Airship
 
     private function getGateValues($obj)
     {
+        $uniqueId = $this->getUniqueId($obj);
+
+        if (isset($this->localObjectsCache[$uniqueId])) {
+            $storedObj = $this->localObjectsCache[$uniqueId];
+
+            if ($obj == $storedObj) {
+                return $this->localGateValuesCache[$uniqueId];
+            }
+        }
+
         $client = new Client(['base_uri' => self::SERVER_URL]);
         $response = null;
         try {
@@ -111,7 +121,13 @@ class Airship
         } catch (\Exception $e) {
             throw $e;
         }
-        return json_decode($response->getBody()->getContents(), true);
+
+        $gateValues = json_decode($response->getBody()->getContents(), true);
+
+        $this->localObjectsCache[$uniqueId] = $obj;
+        $this->localGateValuesCache[$uniqueId] = $gateValues;
+
+        return $gateValues;
     }
 
     public function isEnabled($controlName, $obj, $default = false)
