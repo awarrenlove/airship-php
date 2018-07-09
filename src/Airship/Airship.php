@@ -91,7 +91,7 @@ class Airship
         return $finalId;
     }
 
-    private function getGateValuesMap($obj)
+    private function getGateValues($obj)
     {
         $client = new Client(['base_uri' => self::SERVER_URL]);
         $response = null;
@@ -116,9 +116,9 @@ class Airship
 
     public function isEnabled($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_enabled'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_enabled'];
         } else {
             return $default;
         }
@@ -126,9 +126,9 @@ class Airship
 
     public function getVariation($controlName, $obj, $default = null)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['variation'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['variation'];
         } else {
             return $default;
         }
@@ -136,9 +136,9 @@ class Airship
 
     public function isEligible($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_eligible'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_eligible'];
         } else {
             return $default;
         }
