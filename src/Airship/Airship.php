@@ -22,7 +22,8 @@ class Airship
     private $apiKey;
     private $envKey;
     private $requestOptions = null;
-    private $localCache = array();
+    private $localObjectsCache = array();
+    private $localGateValuesCache = array();
 
     public function __construct($apiKey, $envKey)
     {
