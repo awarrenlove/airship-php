@@ -16,6 +16,10 @@ class Airship
      */
     private $client;
 
+    private $localObjectsCache = [];
+
+    private $localGateValuesCache = [];
+
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
@@ -36,16 +40,65 @@ class Airship
         return '[Airship object]';
     }
 
-    private function getGateValuesMap($obj)
+    private function getUniqueId($obj)
     {
-        return $this->client->sendRequest($obj);
+        $type = '';
+        $id = $obj['id'];
+
+        if (isset($obj['type'])) {
+            $type = $obj['type'];
+        } else {
+            $type = 'User';
+        }
+
+        $groupType = '';
+        $groupId = '';
+
+        if (isset($obj['group'])) {
+            $group = $obj['group'];
+            $groupId = $group['id'];
+
+            if (isset($group['type'])) {
+                $groupType = $group['type'];
+            } else {
+                $groupType = $type . 'Group';
+            }
+        }
+
+        $finalId = $type . '_' . $id;
+
+        if ($groupId !== '') {
+            $finalId = $finalId . ':' . $groupType . '_' . $groupId;
+        }
+
+        return $finalId;
+    }
+
+    private function getGateValues($obj)
+    {
+        $uniqueId = $this->getUniqueId($obj);
+
+        if (isset($this->localObjectsCache[$uniqueId])) {
+            $storedObj = $this->localObjectsCache[$uniqueId];
+
+            if ($obj === $storedObj) {
+                return $this->localGateValuesCache[$uniqueId];
+            }
+        }
+
+        $gateValues = $this->client->sendRequest($obj);
+
+        $this->localObjectsCache[$uniqueId] = $obj;
+        $this->localGateValuesCache[$uniqueId] = $gateValues;
+
+        return $gateValues;
     }
 
     public function isEnabled($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_enabled'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_enabled'];
         } else {
             return $default;
         }
@@ -53,9 +106,9 @@ class Airship
 
     public function getVariation($controlName, $obj, $default = null)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName]) && isset($objectGateValuesMap[$controlName]['variation'])) {
-            return $objectGateValuesMap[$controlName]['variation'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName]) && isset($gateValues[$controlName]['variation'])) {
+            return $gateValues[$controlName]['variation'];
         } else {
             return $default;
         }
@@ -63,9 +116,9 @@ class Airship
 
     public function isEligible($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_eligible'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_eligible'];
         } else {
             return $default;
         }
