@@ -83,7 +83,7 @@ class Airship
 
         $finalId = $type . '_' . $id;
 
-        if ($groupId !=== '') {
+        if ($groupId !== '') {
             $finalId = $finalId . ':' . $groupType . '_' . $groupId;
         }
 
