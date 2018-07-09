@@ -56,6 +56,40 @@ class Airship
         return '[Airship object]';
     }
 
+    private function getUniqueId($obj)
+    {
+        $type = '';
+        $id = $obj['id'];
+
+        if (isset($obj['type'])) {
+            $type = $obj['type'];
+        } else {
+            $type = 'User';
+        }
+
+        $groupType = '';
+        $groupId = '';
+
+        if (isset($obj['group'])) {
+            $group = $obj['group'];
+            $groupId = $group['id'];
+
+            if (isset($group['type'])) {
+                $groupType = $group['type'];
+            } else {
+                $groupType = $type . 'Group';
+            }
+        }
+
+        $finalId = $type . '_' . $id;
+
+        if ($groupId !=== '') {
+            $finalId = $finalId . ':' . $groupType . '_' . $groupId;
+        }
+
+        return $finalId;
+    }
+
     private function getGateValuesMap($obj)
     {
         $client = new Client(['base_uri' => self::SERVER_URL]);
