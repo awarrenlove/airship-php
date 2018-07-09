@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\ClientException;
 class Airship
 {
     const PLATFORM = 'php';
-    const VERSION = '1.1.1';
+    const VERSION = '0.1.0';
 
     const SERVER_URL = 'https://api.airshiphq.com';
     const OBJECT_GATE_VALUES_ENDPOINT = '/v1/object-gate-values/';
@@ -22,6 +22,8 @@ class Airship
     private $apiKey;
     private $envKey;
     private $requestOptions = null;
+    private $localObjectsCache = array();
+    private $localGateValuesCache = array();
 
     public function __construct($apiKey, $envKey)
     {
@@ -55,8 +57,52 @@ class Airship
         return '[Airship object]';
     }
 
-    private function getGateValuesMap($obj)
+    private function getUniqueId($obj)
     {
+        $type = '';
+        $id = $obj['id'];
+
+        if (isset($obj['type'])) {
+            $type = $obj['type'];
+        } else {
+            $type = 'User';
+        }
+
+        $groupType = '';
+        $groupId = '';
+
+        if (isset($obj['group'])) {
+            $group = $obj['group'];
+            $groupId = $group['id'];
+
+            if (isset($group['type'])) {
+                $groupType = $group['type'];
+            } else {
+                $groupType = $type . 'Group';
+            }
+        }
+
+        $finalId = $type . '_' . $id;
+
+        if ($groupId !== '') {
+            $finalId = $finalId . ':' . $groupType . '_' . $groupId;
+        }
+
+        return $finalId;
+    }
+
+    private function getGateValues($obj)
+    {
+        $uniqueId = $this->getUniqueId($obj);
+
+        if (isset($this->localObjectsCache[$uniqueId])) {
+            $storedObj = $this->localObjectsCache[$uniqueId];
+
+            if ($obj === $storedObj) {
+                return $this->localGateValuesCache[$uniqueId];
+            }
+        }
+
         $client = new Client(['base_uri' => self::SERVER_URL]);
         $response = null;
         try {
@@ -75,14 +121,20 @@ class Airship
         } catch (\Exception $e) {
             throw $e;
         }
-        return json_decode($response->getBody()->getContents(), true);
+
+        $gateValues = json_decode($response->getBody()->getContents(), true);
+
+        $this->localObjectsCache[$uniqueId] = $obj;
+        $this->localGateValuesCache[$uniqueId] = $gateValues;
+
+        return $gateValues;
     }
 
     public function isEnabled($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_enabled'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_enabled'];
         } else {
             return $default;
         }
@@ -90,9 +142,9 @@ class Airship
 
     public function getVariation($controlName, $obj, $default = null)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['variation'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['variation'];
         } else {
             return $default;
         }
@@ -100,9 +152,9 @@ class Airship
 
     public function isEligible($controlName, $obj, $default = false)
     {
-        $objectGateValuesMap = $this->getGateValuesMap($obj);
-        if (isset($objectGateValuesMap[$controlName])) {
-            return $objectGateValuesMap[$controlName]['is_eligible'];
+        $gateValues = $this->getGateValues($obj);
+        if (isset($gateValues[$controlName])) {
+            return $gateValues[$controlName]['is_eligible'];
         } else {
             return $default;
         }
