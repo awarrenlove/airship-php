@@ -98,7 +98,7 @@ class Airship
         if (isset($this->localObjectsCache[$uniqueId])) {
             $storedObj = $this->localObjectsCache[$uniqueId];
 
-            if ($obj == $storedObj) {
+            if ($obj === $storedObj) {
                 return $this->localGateValuesCache[$uniqueId];
             }
         }
