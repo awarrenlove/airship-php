@@ -54,7 +54,8 @@ class GuzzleClient implements ClientInterface
             $options['body'] = json_encode($obj);
             $response = $this->client->request(
                 'POST',
-                self::OBJECT_GATE_VALUES_ENDPOINT . $this->envKey
+                self::OBJECT_GATE_VALUES_ENDPOINT . $this->envKey,
+                $options
             );
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
