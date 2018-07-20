@@ -1,9 +1,7 @@
 <?php
 namespace Airship;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\ClientException;
+use Airship\Client\ClientInterface;
 
 // Please do this!
 // function shutdown($airship){
@@ -13,33 +11,18 @@ use GuzzleHttp\Exception\ClientException;
 
 class Airship
 {
-    const PLATFORM = 'php';
-    const VERSION = '0.1.0';
+    /**
+     * @var ClientInterface
+     */
+    private $client;
 
-    const SERVER_URL = 'https://api.airshiphq.com';
-    const OBJECT_GATE_VALUES_ENDPOINT = '/v1/object-gate-values/';
+    private $localObjectsCache = [];
 
-    private $apiKey;
-    private $envKey;
-    private $requestOptions = null;
-    private $localObjectsCache = array();
-    private $localGateValuesCache = array();
+    private $localGateValuesCache = [];
 
-    public function __construct($apiKey, $envKey)
+    public function __construct(ClientInterface $client)
     {
-        $this->apiKey = $apiKey;
-        $this->envKey = $envKey;
-
-        $this->requestOptions = [
-            'headers' => [
-                'Content-Type'  => 'application/json',
-                'Api-Key'       => $this->apiKey,
-                'Accept'        => 'application/json',
-                'SDK-Version'   => self::PLATFORM . ':' . self::VERSION
-            ],
-            'timeout' => 60,
-            'connect_timeout' => 60
-        ];
+        $this->client = $client;
     }
 
     public function __destruct()
@@ -103,26 +86,7 @@ class Airship
             }
         }
 
-        $client = new Client(['base_uri' => self::SERVER_URL]);
-        $response = null;
-        try {
-            $options = $this->requestOptions;
-            $options['body'] = json_encode($obj);
-            $response = $client->request('POST', self::OBJECT_GATE_VALUES_ENDPOINT . $this->envKey, $options);
-        } catch (BadResponseException $e) {
-            throw new \Exception('Bad response - make sure object conforms to valid shape.');
-        } catch (ClientException $e) {
-            $status_code = $e->getResponse()->getStatusCode();
-            if ($status_code === 403) {
-                throw new \Exception('Invalid Airship instance - check API Key and Env Key.');
-            } else {
-                throw $e;
-            }
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
-        $gateValues = json_decode($response->getBody()->getContents(), true);
+        $gateValues = $this->client->sendRequest($obj);
 
         $this->localObjectsCache[$uniqueId] = $obj;
         $this->localGateValuesCache[$uniqueId] = $gateValues;
@@ -135,9 +99,9 @@ class Airship
         $gateValues = $this->getGateValues($obj);
         if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['is_enabled'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     public function getVariation($controlName, $obj, $default = null)
@@ -145,9 +109,9 @@ class Airship
         $gateValues = $this->getGateValues($obj);
         if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['variation'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     public function isEligible($controlName, $obj, $default = false)
@@ -155,8 +119,8 @@ class Airship
         $gateValues = $this->getGateValues($obj);
         if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['is_eligible'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 }
