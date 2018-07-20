@@ -99,19 +99,19 @@ class Airship
         $gateValues = $this->getGateValues($obj);
         if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['is_enabled'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     public function getVariation($controlName, $obj, $default = null)
     {
         $gateValues = $this->getGateValues($obj);
-        if (isset($gateValues[$controlName]) && isset($gateValues[$controlName]['variation'])) {
+        if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['variation'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     public function isEligible($controlName, $obj, $default = false)
@@ -119,8 +119,8 @@ class Airship
         $gateValues = $this->getGateValues($obj);
         if (isset($gateValues[$controlName])) {
             return $gateValues[$controlName]['is_eligible'];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 }

@@ -76,7 +76,7 @@ class AirshipTest extends TestCase
             ->shouldReceive('sendRequest')
             ->andReturn([
                 'bitcoin-pay' => [
-                    'is_enabled' => true,
+                    'variation' => null,
                 ],
                 'paypal-pay' => [
                     'variation' => 'one-touch',
@@ -93,6 +93,6 @@ class AirshipTest extends TestCase
 
         self::assertEquals('one-touch', $airship->getVariation('paypal-pay', $user));
         self::assertEquals(null, $airship->getVariation('bitcoin-pay', $user));
-        self::assertEquals('quick-pay', $airship->getVariation('bitcoin-pay', $user, 'quick-pay'), 'Default value was not returned');
+        self::assertEquals('apple-pay', $airship->getVariation('mobile-pay', $user, 'apple-pay'), 'Default value was not returned');
     }
 }
