@@ -36,11 +36,16 @@ $obj = [
   "id" => "1234", // "id" must be a string or integer
   "display_name" => "ironman@stark.com" // must be a string. If omitted, the SDK will use the same value as "id" (converted to a string)
 ]
+// or
+$obj = new Target(1234, 'User', 'ironman@stark.com');
 
 // The most compact form can be:
 $obj = [
   "id" => 1234
 ]
+// or
+$obj = new Target(1234);
+
 // as this will translate into:
 $obj = [
   "type" => "User",
@@ -75,6 +80,19 @@ $obj = [
     "age" => 39
   ]
 ]
+// or
+$obj = new Target(
+  1234,
+  'User',
+  'ironman@stark.com',
+  [
+    "t_shirt_size" => "M",
+    "date_created" => "2018-02-18",
+    "time_converted" => "2018-02-20T21:54:00.630815+00:00",
+    "owns_property" => true,
+    "age" => 39
+  ]
+);
 
 // Now in app.airshiphq.com, you can target this particular user using its
 // attributes
@@ -105,6 +123,29 @@ $obj = [
     ]
   ]
 ]
+// or
+$group = new Target(
+  5678,
+  'Club',
+  'SF Homeowners Club',
+  [
+    "founded" => "2016-01-01",
+    "active" => true,
+  ]
+);
+$user = new Target(
+  1234,
+  'User',
+  'ironman@stark.com',
+  [
+    "t_shirt_size" => "M",
+    "date_created" => "2018-02-18",
+    "time_converted" => "2018-02-20T21:54:00.630815+00:00",
+    "owns_property" => true,
+     "age" => 39
+  ],
+  $group
+);
 
 // Inheritance of values `enabled?`, `variation`, and `eligible?` works as follows:
 // 1. If the group is enabled, but the base object is not,
