@@ -20,11 +20,11 @@ PHP 5.5 or higher
 require "vendor/autoload.php";
 
 // Create an instance with api_key and env_key
-$airship = new Airship\Airship("<api_key>", "<env_key>");
+$airship = new Airship\Airship(new Airship\Client\GuzzleClient("<api_key>", "<env_key>"));
 // Should be used as a singleton
 
 // e.g.,
-// $airship = new Airship\Airship("r9b72kqdh1wbzkpkf7gntwfapqoc26bl", "nxmqp35umrd3djth");
+// $airship = new Airship\Airship(new Airship\Client\GuzzleClient("r9b72kqdh1wbzkpkf7gntwfapqoc26bl", "nxmqp35umrd3djth"));
 
 if ($airship->isEnabled("bitoin-pay", ["id" => 5])) {
   // ...
