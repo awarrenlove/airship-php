@@ -33,7 +33,7 @@ class GuzzleClient implements ClientInterface
         $this->apiKey = $apiKey;
         $this->envKey = $envKey;
 
-        $this->client = new Client(array_merge_recursive([
+        $this->client = new Client(array_replace_recursive([
             'base_uri' => self::SERVER_URL,
             'headers' => [
                 'Content-Type'  => 'application/json',
