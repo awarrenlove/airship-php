@@ -76,6 +76,10 @@ class Airship
 
     private function getGateValues($obj)
     {
+        if ($obj instanceof Target) {
+            $obj = $obj->toArray();
+        }
+
         $uniqueId = $this->getUniqueId($obj);
 
         if (isset($this->localObjectsCache[$uniqueId])) {
