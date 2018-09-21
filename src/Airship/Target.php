@@ -6,10 +6,10 @@ class Target
 {
     const KEY_ID           = 'id';
     const KEY_TYPE         = 'type';
-    const KEY_DISPLAY_NAME = 'display_name';
+    const KEY_DISPLAY_NAME = 'displayName';
     const KEY_ATTRIBUTES   = 'attributes';
     const KEY_GROUP        = 'group';
-    const KEY_IS_GROUP     = 'is_group';
+    const KEY_IS_GROUP     = 'isGroup';
 
     /**
      * @var int

@@ -8,10 +8,6 @@ use GuzzleHttp\Exception\ClientException;
 
 class GuzzleClient implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    private $apiKey;
 
     /**
      * @var string
@@ -24,34 +20,29 @@ class GuzzleClient implements ClientInterface
     private $client;
 
     /**
-     * @param string $apiKey
      * @param string $envKey
      * @param array  $config An array of Guzzle Client options for configuring the client
      */
-    public function __construct($apiKey, $envKey, array $config = [])
+    public function __construct($envKey, array $config = [])
     {
-        $this->apiKey = $apiKey;
         $this->envKey = $envKey;
 
         $this->client = new Client(array_replace_recursive([
             'base_uri' => self::SERVER_URL,
             'headers' => [
-                'Content-Type'  => 'application/json',
-                'Api-Key'       => $this->apiKey,
-                'Accept'        => 'application/json',
-                'SDK-Version'   => self::PLATFORM . ':' . self::VERSION
+                'Content-Type' => 'application/json',
             ],
-            'timeout' => 60,
-            'connect_timeout' => 60
+            'timeout' => 10,
+            'connect_timeout' => 10,
         ], $config));
     }
 
-    public function sendRequest($obj)
+    public function sendRequest($data)
     {
         $response = null;
 
         try {
-            $options['body'] = json_encode($obj);
+            $options['body'] = json_encode($data);
             $response = $this->client->request(
                 'POST',
                 self::OBJECT_GATE_VALUES_ENDPOINT . $this->envKey,
@@ -60,12 +51,12 @@ class GuzzleClient implements ClientInterface
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             if ($statusCode === 403) {
-                throw new \Exception('Invalid Airship instance - check API Key and Env Key.');
+                throw new \Exception('Failed to connect to Airship edge server');
             } else {
                 throw $e;
             }
         } catch (BadResponseException $e) {
-            throw new \Exception('Bad response - make sure object conforms to valid shape.');
+            throw new \Exception('Failed to connect to Airship edge server');
         }
 
         return json_decode((string) $response->getBody(), true);

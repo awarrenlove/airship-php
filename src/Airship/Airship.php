@@ -3,11 +3,42 @@ namespace Airship;
 
 use Airship\Client\ClientInterface;
 
-// Please do this!
-// function shutdown($airship){
-//     $airship->flush();
-// }
-// register_shutdown_function('shutdown', $airship);
+
+class Flag
+{
+    public $flagName;
+
+    /**
+     * @var Airship
+     */
+    private $delegate;
+
+    public function __construct($flagName, Airship $delegate)
+    {
+        $this->flagName = $flagName;
+        $this->delegate = $delegate;
+    }
+
+    public function getTreatment($entity)
+    {
+        return $this->delegate->getTreatment($this, $entity);
+    }
+
+    public function getPayload($entity)
+    {
+        return $this->delegate->getPayload($this, $entity);
+    }
+
+    public function isEligible($entity)
+    {
+        return $this->delegate->isEligible($this, $entity);
+    }
+
+    public function isEnabled($entity)
+    {
+        return $this->delegate->isEnabled($this, $entity);
+    }
+}
 
 class Airship
 {
@@ -16,23 +47,9 @@ class Airship
      */
     private $client;
 
-    private $localObjectsCache = [];
-
-    private $localGateValuesCache = [];
-
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
-    }
-
-    public function __destruct()
-    {
-        $this->flush();
-    }
-
-    public function flush()
-    {
-        // Do nothing for now.
     }
 
     public function __toString()
@@ -40,91 +57,62 @@ class Airship
         return '[Airship object]';
     }
 
-    private function getUniqueId($obj)
+    public function flag($flagName)
     {
-        $type = '';
-        $id = $obj['id'];
-
-        if (isset($obj['type'])) {
-            $type = $obj['type'];
-        } else {
-            $type = 'User';
-        }
-
-        $groupType = '';
-        $groupId = '';
-
-        if (isset($obj['group'])) {
-            $group = $obj['group'];
-            $groupId = $group['id'];
-
-            if (isset($group['type'])) {
-                $groupType = $group['type'];
-            } else {
-                $groupType = $type . 'Group';
-            }
-        }
-
-        $finalId = $type . '_' . $id;
-
-        if ($groupId !== '') {
-            $finalId = $finalId . ':' . $groupType . '_' . $groupId;
-        }
-
-        return $finalId;
+        return new Flag($flagName, $this);
     }
 
-    private function getGateValues($obj)
+    private function getObjectValues($flag, $entity)
     {
-        if ($obj instanceof Target) {
-            $obj = $obj->toArray();
+        if ($entity instanceof Target) {
+            $entity = $entity->toArray();
         }
 
-        $uniqueId = $this->getUniqueId($obj);
+        $objectValues = $this->client->sendRequest([
+            'flag' => $flag->flagName,
+            'entity' => $entity,
+        ]);
 
-        if (isset($this->localObjectsCache[$uniqueId])) {
-            $storedObj = $this->localObjectsCache[$uniqueId];
-
-            if ($obj === $storedObj) {
-                return $this->localGateValuesCache[$uniqueId];
-            }
-        }
-
-        $gateValues = $this->client->sendRequest($obj);
-
-        $this->localObjectsCache[$uniqueId] = $obj;
-        $this->localGateValuesCache[$uniqueId] = $gateValues;
-
-        return $gateValues;
+        return $objectValues;
     }
 
-    public function isEnabled($controlName, $obj, $default = false)
+    public function getTreatment($flag, $entity)
     {
-        $gateValues = $this->getGateValues($obj);
-        if (isset($gateValues[$controlName])) {
-            return $gateValues[$controlName]['is_enabled'];
+        $objectValues = $this->getObjectValues($flag, $entity);
+        if (isset($objectValues['treatment'])) {
+            return $objectValues['treatment'];
         }
 
-        return $default;
+        return 'off';
     }
 
-    public function getVariation($controlName, $obj, $default = null)
+    public function getPayload($flag, $entity)
     {
-        $gateValues = $this->getGateValues($obj);
-        if (isset($gateValues[$controlName])) {
-            return $gateValues[$controlName]['variation'];
+        $objectValues = $this->getObjectValues($flag, $entity);
+        if (isset($objectValues['payload'])) {
+            return $objectValues['payload'];
         }
 
-        return $default;
+        return NULL;
     }
 
-    public function isEligible($controlName, $obj, $default = false)
+    public function isEligible($flag, $entity)
     {
-        $gateValues = $this->getGateValues($obj);
-        if (isset($gateValues[$controlName])) {
-            return $gateValues[$controlName]['is_eligible'];
+        $objectValues = $this->getObjectValues($flag, $entity);
+        if (isset($objectValues['isEligible'])) {
+            return $objectValues['isEligible'];
         }
 
-        return $default;
+        return false;
+    }
+
+    public function isEnabled($flag, $entity)
+    {
+        $objectValues = $this->getObjectValues($flag, $entity);
+        if (isset($objectValues['isEnabled'])) {
+            return $objectValues['isEnabled'];
+        }
+
+        return false;
     }
 }
