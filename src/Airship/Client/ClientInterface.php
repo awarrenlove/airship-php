@@ -5,15 +5,15 @@ namespace Airship\Client;
 interface ClientInterface
 {
     const PLATFORM = 'php';
-    const VERSION = '0.2.1';
+    const VERSION = '2.0.0';
 
-    const SERVER_URL = 'https://api.airshiphq.com';
-    const OBJECT_GATE_VALUES_ENDPOINT = '/v1/object-gate-values/';
+    const SERVER_URL = 'http://localhost:5000';
+    const OBJECT_GATE_VALUES_ENDPOINT = '/v2/object-values/';
 
     /**
-     * @param array $obj
+     * @param array $data
      *
      * @return array
      */
-    public function sendRequest($obj);
+    public function sendRequest($data);
 }

@@ -21,53 +21,48 @@ class GuzzleClientTest extends TestCase
     {
         self::expectException(\Exception::class);
 
-        $client = new GuzzleClient('apiKey', 'envKey');
+        $client = new GuzzleClient('envKey');
 
         $this->mockResponses($client, [
             new ClientException('Error', new Request('POST', 'test'), new Response(403)),
         ]);
 
-        $client->sendRequest(['type' => 'User', 'id' => '1234']);
+        $client->sendRequest(['flag' => 'bitcoin-pay', 'entity' => ['type' => 'User', 'id' => '1234']]);
     }
 
     public function test_handles_400_errors()
     {
         self::expectException(ClientException::class);
 
-        $client = new GuzzleClient('apiKey', 'envKey');
+        $client = new GuzzleClient('envKey');
 
         $this->mockResponses($client, [
             new ClientException('Error', new Request('POST', 'test'), new Response(404)),
         ]);
 
-        $client->sendRequest(['type' => 'User', 'id' => '1234']);
+        $client->sendRequest(['flag' => 'bitcoin-pay', 'entity' => ['type' => 'User', 'id' => '1234']]);
     }
 
     public function test_handles_500_errors()
     {
         self::expectException(\Exception::class);
 
-        $client = new GuzzleClient('apiKey', 'envKey');
+        $client = new GuzzleClient('envKey');
 
         $this->mockResponses($client, [
             new BadResponseException('Error', new Request('POST', 'test'), new Response(500)),
         ]);
 
-        $client->sendRequest(['type' => 'User', 'id' => '1234']);
+        $client->sendRequest(['flag' => 'bitcoin-pay', 'entity' => ['type' => 'User', 'id' => '1234']]);
     }
 
     public function test_returns_parsed_body()
     {
-        $client = new GuzzleClient('apiKey', 'envKey');
+        $client = new GuzzleClient('envKey');
 
         $response = <<<JSON
 {
-    "bitcoin-pay": {
-        "is_enabled": true
-    },
-    "paypal-pay": {
-        "is_enabled": false
-    }
+    "isEnabled": true
 }
 JSON;
 
@@ -75,15 +70,10 @@ JSON;
             new Response(200, ['Content-Type' => 'application/json'], $response)
         ]);
 
-        $result = $client->sendRequest(['type' => 'User', 'id' => '1234']);
+        $result = $client->sendRequest(['flag' => 'bitcoin-pay', 'entity' => ['type' => 'User', 'id' => '1234']]);
 
         $expected = [
-            'bitcoin-pay' => [
-                'is_enabled' => true,
-            ],
-            'paypal-pay' => [
-                'is_enabled' => false,
-            ],
+            'isEnabled' => true,
         ];
 
         self::assertEquals($expected, $result);
