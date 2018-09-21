@@ -31,7 +31,7 @@ if ($airship->flag('bitcoin-pay')->isEnabled(['id' => 5])) {
 $entity = [
   'type' => 'User', // 'type' starts with a capital letter '[U]ser', '[H]ome', '[C]ar'. If omittied, it will default to 'User'
   'id' => '1234', // 'id' must be a string or integer
-  'display_name' => 'ironman@stark.com' // must be a string. If omitted, the SDK will use the same value as 'id' (converted to a string)
+  'displayName' => 'ironman@stark.com' // must be a string. If omitted, the SDK will use the same value as 'id' (converted to a string)
 ]
 // or
 $entity = new Target(1234, 'User', 'ironman@stark.com');
@@ -47,7 +47,7 @@ $entity = new Target(1234);
 $entity = [
   'type' => 'User',
   'id' => '1234',
-  'display_name' => '1234'
+  'displayName' => '1234'
 ]
 
 $airship->flag('bitcoin-pay')->isEnabled($entity) // Does the entity have the feature 'bitcoin-pay'?
@@ -68,7 +68,7 @@ $airship->flag('bitcoin-pay')->isEligible($entity)
 $entity = [
   'type' => 'User',
   'id' => '1234',
-  'display_name' => 'ironman@stark.com',
+  'displayName' => 'ironman@stark.com',
   'attributes' => [
     't_shirt_size' => 'M',
     'date_created' => '2018-02-18',
@@ -102,7 +102,7 @@ $entity = new Target(
 $entity = [
   'type' => 'User',
   'id' => '1234',
-  'display_name' => 'ironman@stark.com',
+  'displayName' => 'ironman@stark.com',
   'attributes' => [
     't_shirt_size' => 'M',
     'date_created' => '2018-02-18',
@@ -113,7 +113,7 @@ $entity = [
   'group' => [
     'type' => 'Club',
     'id' => '5678',
-    'display_name' => 'SF Homeowners Club',
+    'displayName' => 'SF Homeowners Club',
     'attributes' => [
       'founded' => '2016-01-01',
       'active' => true
@@ -155,10 +155,10 @@ $user = new Target(
 
 // You can ask questions about the group directly (use the `is_group` flag):
 $entity = [
-  'is_group' => true,
+  'isGroup' => true,
   'type' => 'Club',
   'id' => '5678',
-  'display_name' => 'SF Homeowners Club',
+  'displayName' => 'SF Homeowners Club',
   'attributes' => [
     'founded' => '2016-01-01',
     'active' => true
