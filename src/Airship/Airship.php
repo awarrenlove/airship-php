@@ -3,43 +3,6 @@ namespace Airship;
 
 use Airship\Client\ClientInterface;
 
-
-class Flag
-{
-    public $flagName;
-
-    /**
-     * @var Airship
-     */
-    private $delegate;
-
-    public function __construct($flagName, Airship $delegate)
-    {
-        $this->flagName = $flagName;
-        $this->delegate = $delegate;
-    }
-
-    public function getTreatment($entity)
-    {
-        return $this->delegate->getTreatment($this, $entity);
-    }
-
-    public function getPayload($entity)
-    {
-        return $this->delegate->getPayload($this, $entity);
-    }
-
-    public function isEligible($entity)
-    {
-        return $this->delegate->isEligible($this, $entity);
-    }
-
-    public function isEnabled($entity)
-    {
-        return $this->delegate->isEnabled($this, $entity);
-    }
-}
-
 class Airship
 {
     /**
@@ -57,11 +20,22 @@ class Airship
         return '[Airship object]';
     }
 
+    /**
+     * @param string $flagName
+     *
+     * @return Flag
+     */
     public function flag($flagName)
     {
         return new Flag($flagName, $this);
     }
 
+    /**
+     * @param              $flag
+     * @param Entity|array $entity
+     *
+     * @return array
+     */
     private function getObjectValues($flag, $entity)
     {
         if ($entity instanceof Entity) {
@@ -76,6 +50,12 @@ class Airship
         return $objectValues;
     }
 
+    /**
+     * @param string       $flag
+     * @param Entity|array $entity
+     *
+     * @return string
+     */
     public function getTreatment($flag, $entity)
     {
         $objectValues = $this->getObjectValues($flag, $entity);
@@ -86,6 +66,12 @@ class Airship
         return 'off';
     }
 
+    /**
+     * @param string       $flag
+     * @param Entity|array $entity
+     *
+     * @return mixed|null
+     */
     public function getPayload($flag, $entity)
     {
         $objectValues = $this->getObjectValues($flag, $entity);
@@ -93,9 +79,15 @@ class Airship
             return $objectValues['payload'];
         }
 
-        return NULL;
+        return null;
     }
 
+    /**
+     * @param string       $flag
+     * @param Entity|array $entity
+     *
+     * @return bool
+     */
     public function isEligible($flag, $entity)
     {
         $objectValues = $this->getObjectValues($flag, $entity);
@@ -106,6 +98,12 @@ class Airship
         return false;
     }
 
+    /**
+     * @param string       $flag
+     * @param Entity|array $entity
+     *
+     * @return bool
+     */
     public function isEnabled($flag, $entity)
     {
         $objectValues = $this->getObjectValues($flag, $entity);
