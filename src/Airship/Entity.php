@@ -2,7 +2,7 @@
 
 namespace Airship;
 
-class Target
+class Entity
 {
     const KEY_ID           = 'id';
     const KEY_TYPE         = 'type';
@@ -32,7 +32,7 @@ class Target
     private $attributes;
 
     /**
-     * @var \Airship\Target|null
+     * @var \Airship\Entity|null
      */
     private $group;
 
@@ -46,7 +46,7 @@ class Target
      * @param string               $type
      * @param string|null          $displayName
      * @param array                $attributes
-     * @param \Airship\Target|null $group
+     * @param \Airship\Entity|null $group
      * @param bool                 $isGroup
      */
     public function __construct(
@@ -122,7 +122,7 @@ class Target
     }
 
     /**
-     * @return \Airship\Target|null
+     * @return \Airship\Entity|null
      */
     public function getGroup()
     {
@@ -130,7 +130,7 @@ class Target
     }
 
     /**
-     * @param \Airship\Target $group
+     * @param \Airship\Entity $group
      *
      * @return $this
      */
@@ -173,7 +173,7 @@ class Target
             $array[self::KEY_ATTRIBUTES] = $this->attributes;
         }
 
-        if (!empty($this->group) && $this->group instanceof Target) {
+        if (!empty($this->group) && $this->group instanceof Entity) {
             $array[self::KEY_GROUP] = $this->group->toArray();
         }
 

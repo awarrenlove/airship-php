@@ -11,18 +11,39 @@
 ## Requirement
 PHP 5.5 or higher
 
-## Installation
+## Prerequisite
+
+This SDK works with the [Airship Microservice](https://github.com/airshiphq/airship-microservice). Please refer to the its documenation before proceeding.
+
+### Content
+- [01 Installation](#01-installation)
+- [02 Key Concepts](#02-key-concepts)
+- [03 Configuring Flags](#03-configuring-flags)
+- [04 Usage](#04-usage)
+
+
+## 01 Installation
 `php composer.phar require airship/airship-php`
 
+## 02 Key Concepts
 
-## Usage
+In Airship, feature **flags** control traffic to generic objects (called **entities**). The most common type for entities is `User`, but they can also be other things (i.e. `Page`, `Group`, `Team`, `App`, etc.). By default, all entities have the type `User`.
+
+Entities can be represented by dicitionaries or by using the `Entity` class.
+
+## 03 Configuring Flags
+
+To configure Airship, we would need to pass a new Client instance.
+
 ```php
 require 'vendor/autoload.php';
 
 // Create an instance with an env key
 $airship = new Airship\Airship(new Airship\Client\GuzzleClient('<env_key>'));
+```
 
-
+## 04 Usage
+```php
 if ($airship->flag('bitcoin-pay')->isEnabled(['id' => 5])) {
   // ...
 }
@@ -31,28 +52,28 @@ if ($airship->flag('bitcoin-pay')->isEnabled(['id' => 5])) {
 $entity = [
   'type' => 'User', // 'type' starts with a capital letter '[U]ser', '[H]ome', '[C]ar'. If omittied, it will default to 'User'
   'id' => '1234', // 'id' must be a string or integer
-  'displayName' => 'ironman@stark.com' // must be a string. If omitted, the SDK will use the same value as 'id' (converted to a string)
-]
+  'displayName' => 'ironman@stark.com', // must be a string. If omitted, the SDK will use the same value as 'id' (converted to a string)
+];
 // or
-$entity = new Target(1234, 'User', 'ironman@stark.com');
+$entity = new Entity(1234, 'User', 'ironman@stark.com');
 
 // The most compact form can be:
 $entity = [
   'id' => 1234
-]
+];
 // or
-$entity = new Target(1234);
+$entity = new Entity(1234);
 
 // as this will translate into:
 $entity = [
   'type' => 'User',
   'id' => '1234',
-  'displayName' => '1234'
-]
+  'displayName' => '1234',
+];
 
-$airship->flag('bitcoin-pay')->isEnabled($entity) // Does the entity have the feature 'bitcoin-pay'?
-$airship->flag('bitcoin-pay')->getTreatment($entity) // Get the treatment associated with the flag
-$airship->flag('bitcoin-pay')->isEligible($entity)
+$airship->flag('bitcoin-pay')->isEnabled($entity); // Does the entity have the feature 'bitcoin-pay'?
+$airship->flag('bitcoin-pay')->getTreatment($entity); // Get the treatment associated with the flag
+$airship->flag('bitcoin-pay')->isEligible($entity);
 // Returns true if the entity can potentially receive the feature via sampling
 // or is already receiving the feature.
 
@@ -74,11 +95,11 @@ $entity = [
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
-  ]
-]
+    'age' => 39,
+  ],
+];
 // or
-$entity = new Target(
+$entity = new Entity(
   1234,
   'User',
   'ironman@stark.com',
@@ -87,7 +108,7 @@ $entity = new Target(
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ]
 );
 
@@ -108,7 +129,7 @@ $entity = [
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ],
   'group' => [
     'type' => 'Club',
@@ -116,12 +137,12 @@ $entity = [
     'displayName' => 'SF Homeowners Club',
     'attributes' => [
       'founded' => '2016-01-01',
-      'active' => true
-    ]
-  ]
-]
+      'active' => true,
+    ],
+  ],
+];
 // or
-$group = new Target(
+$group = new Entity(
   5678,
   'Club',
   'SF Homeowners Club',
@@ -130,7 +151,7 @@ $group = new Target(
     'active' => true,
   ]
 );
-$user = new Target(
+$user = new Entity(
   1234,
   'User',
   'ironman@stark.com',
@@ -139,7 +160,7 @@ $user = new Target(
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ],
   $group
 );
@@ -161,11 +182,11 @@ $entity = [
   'displayName' => 'SF Homeowners Club',
   'attributes' => [
     'founded' => '2016-01-01',
-    'active' => true
-  ]
-]
+    'active' => true,
+  ],
+];
 
-$airship->flag('bitcoin-pay')->isEnabled($entity)
+$airship->flag('bitcoin-pay')->isEnabled($entity);
 ```
 ___
 

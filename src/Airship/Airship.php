@@ -64,7 +64,7 @@ class Airship
 
     private function getObjectValues($flag, $entity)
     {
-        if ($entity instanceof Target) {
+        if ($entity instanceof Entity) {
             $entity = $entity->toArray();
         }
 
