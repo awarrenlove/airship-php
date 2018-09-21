@@ -29,7 +29,7 @@ This SDK works with the [Airship Microservice](https://github.com/airshiphq/airs
 
 In Airship, feature **flags** control traffic to generic objects (called **entities**). The most common type for entities is `User`, but they can also be other things (i.e. `Page`, `Group`, `Team`, `App`, etc.). By default, all entities have the type `User`.
 
-In Go, we define different entity types using `struct`s. (e.g., the `User` struct in the usage section)
+Entities can be represented by dicitionaries or by using the Entity class.
 
 ## 03 Configuring Flags
 
@@ -55,14 +55,14 @@ $entity = [
   'displayName' => 'ironman@stark.com', // must be a string. If omitted, the SDK will use the same value as 'id' (converted to a string)
 ];
 // or
-$entity = new Target(1234, 'User', 'ironman@stark.com');
+$entity = new Entity(1234, 'User', 'ironman@stark.com');
 
 // The most compact form can be:
 $entity = [
   'id' => 1234
 ];
 // or
-$entity = new Target(1234);
+$entity = new Entity(1234);
 
 // as this will translate into:
 $entity = [
@@ -95,11 +95,11 @@ $entity = [
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ],
 ];
 // or
-$entity = new Target(
+$entity = new Entity(
   1234,
   'User',
   'ironman@stark.com',
@@ -108,7 +108,7 @@ $entity = new Target(
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ]
 );
 
@@ -137,12 +137,12 @@ $entity = [
     'displayName' => 'SF Homeowners Club',
     'attributes' => [
       'founded' => '2016-01-01',
-      'active' => true
+      'active' => true,
     ],
   ],
 ];
 // or
-$group = new Target(
+$group = new Entity(
   5678,
   'Club',
   'SF Homeowners Club',
@@ -151,7 +151,7 @@ $group = new Target(
     'active' => true,
   ]
 );
-$user = new Target(
+$user = new Entity(
   1234,
   'User',
   'ironman@stark.com',
@@ -160,7 +160,7 @@ $user = new Target(
     'date_created' => '2018-02-18',
     'time_converted' => '2018-02-20T21:54:00.630815+00:00',
     'owns_property' => true,
-    'age' => 39
+    'age' => 39,
   ],
   $group
 );
@@ -182,7 +182,7 @@ $entity = [
   'displayName' => 'SF Homeowners Club',
   'attributes' => [
     'founded' => '2016-01-01',
-    'active' => true
+    'active' => true,
   ],
 ];
 
