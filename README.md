@@ -29,7 +29,7 @@ This SDK works with the [Airship Microservice](https://github.com/airshiphq/airs
 
 In Airship, feature **flags** control traffic to generic objects (called **entities**). The most common type for entities is `User`, but they can also be other things (i.e. `Page`, `Group`, `Team`, `App`, etc.). By default, all entities have the type `User`.
 
-Entities can be represented by dicitionaries or by using the Entity class.
+Entities can be represented by dicitionaries or by using the `Entity` class.
 
 ## 03 Configuring Flags
 
