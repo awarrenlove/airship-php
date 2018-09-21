@@ -13,7 +13,7 @@ PHP 5.5 or higher
 
 ## Prerequisite
 
-This SDK works with the [Airship Microservice](https://github.com/airshiphq/airship-microservice). Please refer to the its documenation before proceeding.
+This SDK works with the [Airship Microservice](https://github.com/airshiphq/airship-microservice). Please refer to its documentation before proceeding.
 
 ### Content
 - [01 Installation](#01-installation)
@@ -187,6 +187,23 @@ $entity = [
 ];
 
 $airship->flag('bitcoin-pay')->isEnabled($entity);
+```
+
+## Contributing
+
+Dependencies are managed using [Composer](https://getcomposer.org/) and the following documentation assumes that
+`composer` is installed on the your executable path.
+
+### Code Style
+
+PSR-2 code style is enforced. Check the code style with `composer check-style` and fix it with `composer fix-style`.
+
+### Running Tests
+
+Tests are run through PhpUnit
+
+```
+composer test
 ```
 ___
 
