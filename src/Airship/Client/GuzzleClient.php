@@ -21,14 +21,15 @@ class GuzzleClient implements ClientInterface
 
     /**
      * @param string $envKey
+     * @param string $serverUrl
      * @param array  $config An array of Guzzle Client options for configuring the client
      */
-    public function __construct($envKey, array $config = [])
+    public function __construct($envKey, array $config = [], $serverUrl = self::DEFAULT_SERVER_URL)
     {
         $this->envKey = $envKey;
 
         $this->client = new Client(array_replace_recursive([
-            'base_uri' => self::SERVER_URL,
+            'base_uri' => $serverUrl,
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
